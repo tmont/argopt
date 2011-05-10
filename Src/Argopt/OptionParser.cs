@@ -5,21 +5,34 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace Argopt {
-
-	public enum OptionStyle {
-		Windows = 1,
-		Unix = 2
-	}
-
+	/// <summary>
+	/// Provides static methods for parsing command line arguments
+	/// </summary>
 	public static class OptionParser {
 		private static readonly Regex unixRegex = new Regex(@"^--?([^=]+)");
 		private static readonly Regex windowsRegex = new Regex(@"^/([^:]+)");
 
-		public static IOptionValues<T> Parse<T>(string[] args, OptionStyle optionStyle = OptionStyle.Unix) where T : new() {
+		/// <summary>
+		/// Parses command line options, injecting values into a new instance of the option contract
+		/// defined in <typeparamref name="T"/>
+		/// </summary>
+		/// <typeparam name="T">The type of the option contract</typeparam>
+		/// <param name="args">The command line arguments to parse</param>
+		/// <param name="optionStyle">The command line syntax style, default is <see cref="OptionStyle.Unix"/></param>
+		/// <seealso cref="Parse{T}(string[],T,OptionStyle)"/>
+		public static IOptionParseResult<T> Parse<T>(string[] args, OptionStyle optionStyle = OptionStyle.Unix) where T : new() {
 			return Parse(args, new T(), optionStyle);
 		}
 
-		public static IOptionValues<T> Parse<T>(string[] args, T contract, OptionStyle optionStyle = OptionStyle.Unix) {
+		/// <summary>
+		/// Parses command line options, injecting values into the given instance of the option contract
+		/// </summary>
+		/// <typeparam name="T">The type of the option contract</typeparam>
+		/// <param name="args">The command line arguments to parse</param>
+		/// <param name="contract">An instance of the option contract</param>
+		/// <param name="optionStyle">The command line syntax style, default is <see cref="OptionStyle.Unix"/></param>
+		/// <seealso cref="Parse{T}(string[],OptionStyle)"/>
+		public static IOptionParseResult<T> Parse<T>(string[] args, T contract, OptionStyle optionStyle = OptionStyle.Unix) {
 			var properties = contract
 				.GetType()
 				.GetProperties(BindingFlags.Public | BindingFlags.Instance)
@@ -79,7 +92,7 @@ namespace Argopt {
 				}
 			}
 
-			return new OptionValues<T>(contract, nonOptionValues, errors);
+			return new OptionParseResult<T>(contract, nonOptionValues, errors);
 		}
 	}
 }

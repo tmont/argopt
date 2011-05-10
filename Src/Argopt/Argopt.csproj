@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <NoWarn>1591</NoWarn>
+    <NoWarn>1591,1573</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -46,7 +46,8 @@
     <Compile Include="OptionProperty.cs" />
     <Compile Include="OptionParser.cs" />
     <Compile Include="OptionAttribute.cs" />
-    <Compile Include="OptionValues.cs" />
+    <Compile Include="OptionStyle.cs" />
+    <Compile Include="OptionParseResult.cs" />
     <Compile Include="ParsingError.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
