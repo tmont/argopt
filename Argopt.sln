@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argopt", "Src\Argopt\Argopt.csproj", "{215ED2F2-5702-46E6-9F83-0831BFEBC7B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Argopt.Tests", "Tests\Argopt.Tests\Argopt.Tests.csproj", "{D3DFBE14-6672-492E-9E0F-58210172783A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{215ED2F2-5702-46E6-9F83-0831BFEBC7B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{215ED2F2-5702-46E6-9F83-0831BFEBC7B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{215ED2F2-5702-46E6-9F83-0831BFEBC7B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{215ED2F2-5702-46E6-9F83-0831BFEBC7B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3DFBE14-6672-492E-9E0F-58210172783A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3DFBE14-6672-492E-9E0F-58210172783A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3DFBE14-6672-492E-9E0F-58210172783A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3DFBE14-6672-492E-9E0F-58210172783A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
