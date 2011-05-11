@@ -34,6 +34,8 @@ namespace Argopt {
 			var descriptionAttribute = attributes.OfType<DescriptionAttribute>().FirstOrDefault();
 			if (descriptionAttribute != null) {
 				Description = descriptionAttribute.Description;
+				ValueName = descriptionAttribute.ValueName;
+				Required = descriptionAttribute.Required;
 			}
 
 			IsValueProperty = attributes.Any(a => a.GetType() == typeof(ValuePropertyAttribute));
@@ -132,5 +134,7 @@ namespace Argopt {
 		public string Delimiter { get; private set; }
 		public string Description { get; private set; }
 		public bool IsValueProperty { get; private set; }
+		public string ValueName{ get; private set; }
+		public bool Required{ get; private set; }
 	}
 }

@@ -103,7 +103,7 @@ namespace Argopt {
 	/// </summary>
 	public sealed class DescriptionAttribute : OptionAttribute {
 		/// <param name="description">The description of the option</param>
-		public DescriptionAttribute(string description = null) {
+		public DescriptionAttribute(string description) {
 			Description = description ?? string.Empty;
 		}
 
@@ -116,6 +116,11 @@ namespace Argopt {
 		/// Gets or sets whether this option or value is required (default is <c>false</c>)
 		/// </summary>
 		public bool Required { get; set; }
+
+		/// <summary>
+		/// Gets or sets the name of the value that should be passed to the option
+		/// </summary>
+		public string ValueName { get; set; }
 	}
 
 	/// <summary>
