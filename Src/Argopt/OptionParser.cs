@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -54,8 +56,11 @@ namespace Argopt {
 		/// Gets a formatted description of the contract class defined by <typeparamref name="T"/>
 		/// </summary>
 		/// <typeparam name="T">The contract class type</typeparam>
+		/// <param name="executableName">The name of the executable; if not given, defaults to Process.GetCurrentProcess().MainModule.FileName</param>
+		/// <param name="lineLength">The length at which to start wrapping lines</param>
 		/// <param name="optionStyle">The command line syntax style, default is <see cref="OptionStyle.Unix"/></param>
-		public static string GetDescription<T>(string executableName, int lineLength = 100, OptionStyle optionStyle = OptionStyle.Unix) {
+		public static string GetDescription<T>(string executableName = null, int lineLength = 100, OptionStyle optionStyle = OptionStyle.Unix) {
+			executableName = executableName ?? Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
 			var properties = GetProperties<T>();
 			var descriptionBuilder = new StringBuilder(properties.Count() * 50);
 			const int aliasIndent = 1;

@@ -3,7 +3,6 @@ using System.Linq;
 using Argopt;
 
 namespace argopt_test {
-
 	public class Contract {
 		public Contract() {
 			Repeat = 1;
@@ -47,7 +46,7 @@ namespace argopt_test {
 
 	class Program {
 		static void PrintUsage() {
-			Console.WriteLine(OptionParser.GetDescription<Contract>("argopt-test.exe"));
+			Console.WriteLine(OptionParser.GetDescription<Contract>());
 		}
 
 		static void Main(string[] args) {
