@@ -55,11 +55,10 @@ namespace Argopt {
 		/// </summary>
 		/// <typeparam name="T">The contract class type</typeparam>
 		/// <param name="optionStyle">The command line syntax style, default is <see cref="OptionStyle.Unix"/></param>
-		public static string GetDescription<T>(string executableName, OptionStyle optionStyle = OptionStyle.Unix) {
+		public static string GetDescription<T>(string executableName, int lineLength = 100, OptionStyle optionStyle = OptionStyle.Unix) {
 			var properties = GetProperties<T>();
 			var descriptionBuilder = new StringBuilder(properties.Count() * 50);
 			const int aliasIndent = 1;
-			const int lineLength = 72;
 			var aliasPrefix = optionStyle == OptionStyle.Unix ? "-" : "/";
 			var prefix = optionStyle == OptionStyle.Unix ? "--" : "/";
 			var valuePrefix = optionStyle == OptionStyle.Unix ? "=" : ":";
@@ -96,6 +95,10 @@ namespace Argopt {
 					length += 1 + property.ValueName.Length; //+1 for "=" or ":"
 				}
 
+				if (property.IsComplexFlag) {
+					length += 5; //appends [+|-]
+				}
+
 				if (property.Aliases.Any()) {
 					length = Math.Max(length, property.Aliases.Max(alias => alias.Length + aliasPrefix.Length + aliasIndent));
 				}
@@ -104,10 +107,9 @@ namespace Argopt {
 			}) + 1; //+1 for padding
 
 			
-			var adjustedLineLength = 72 - descriptionStartColumn;
+			var adjustedLineLength = lineLength - descriptionStartColumn;
 			
 			//first render the value property stuff
-			
 			if (valueProperty != null) {
 				var name = valueProperty.ValueName ?? valueProperty.Name;
 				descriptionBuilder.AppendLine("ARGUMENTS");
@@ -132,6 +134,11 @@ namespace Argopt {
 				descriptionBuilder.Append(prefix + property.Name);
 
 				var indent = property.Name.Length + prefix.Length;
+				if (property.IsComplexFlag) {
+					descriptionBuilder.Append("[+|-]");
+					indent += 5;
+				}
+
 				if (property.ValueName != null) {
 					descriptionBuilder.Append(valuePrefix + property.ValueName);
 					indent += valuePrefix.Length + property.ValueName.Length;
@@ -141,7 +148,7 @@ namespace Argopt {
 
 				var lines = WordWrap(property.Description, adjustedLineLength);
 				var aliases = property.Aliases.OrderBy(alias => alias).ToList();
-				var i = 0;
+				var i = 1;
 
 				if (lines.Count > 0) {
 					var spaceLength = 0;
@@ -162,8 +169,7 @@ namespace Argopt {
 					descriptionBuilder.AppendLine();
 				}
 
-
-				for (; i < aliases.Count; i++) {
+				for (i = i - 1; i < aliases.Count; i++) {
 					descriptionBuilder.AppendLine(new string(' ', aliasIndent) + aliasPrefix + aliases[i]);
 				}
 			}
@@ -236,7 +242,7 @@ namespace Argopt {
 				if (arg.Length > name.Length) {
 					//the value is given after = or :
 					value = arg.Substring(name.Length + 1);
-				} else if (property.IsFlag) {
+				} else if (property.IsFlag && !property.IsComplexFlag) {
 					value = bool.TrueString;
 				} else if (i + 1 < args.Length) {
 					//value is the next arg

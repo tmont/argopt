@@ -225,7 +225,6 @@ namespace Argopt.Tests {
 
 		[Test]
 		public void Should_generate_formatted_description() {
-			var description = OptionParser.GetDescription<OptionContract>("awesome.exe");
 			const string expected = @"
 USAGE
 awesome.exe --CaseTest=foo --lollersk8 [--AliasTest=string]
@@ -234,39 +233,39 @@ awesome.exe --CaseTest=foo --lollersk8 [--AliasTest=string]
 [--Lulz=teh_lulz] files
 
 ARGUMENTS
-files                 This is the value that you should be passing on
-                      the command line. It is different from an option.
+files                  This is the value that you should be passing on
+                       the command line. It is different from an option.
 
 OPTIONS
---AliasTest=string    Lorem ipsum dolor sit amet, consectetur
- -a                   adipisicing elit, sed do eiusmod tempor incididunt
- -alias               ut labore et dolore magna aliqua. Ut enim ad minim
-                      veniam, quis nostrud exercitation ullamco laboris
-                      nisi ut aliquip ex ea commodo consequat. Duis aute
-                      irure dolor in reprehenderit in voluptate velit
-                      esse cillum dolore eu fugiat nulla pariatur.
-                      Excepteur sint occaecat cupidatat non proident,
-                      sunt in culpa qui officia deserunt mollit anim id
-                      est laborum.
---ArrayTest           
---BoolTest=true|false Tests boolean crap
---CaseTest=foo        Tests for case sensitivity
---ComplexFlagTest     
---DoubleTest          
---EnumArrayTest       
---EnumTest            
---FlagTest            This is a long description and I hope it goes
-                      really well and it's going pretty good but not as
-                      good as I was hoping I hope it finishes soon
-                      because I can't think of anything else to write oh
-                      god what's happening?!
---IntArrayTest        
---IntTest             
---lollersk8           
---Lulz=teh_lulz       Set for ultimate lulz!
+--AliasTest=string     Lorem ipsum dolor sit amet, consectetur
+ -a                    adipisicing elit, sed do eiusmod tempor
+ -alias                incididunt ut labore et dolore magna aliqua. Ut
+                       enim ad minim veniam, quis nostrud exercitation
+                       ullamco laboris nisi ut aliquip ex ea commodo
+                       consequat. Duis aute irure dolor in reprehenderit
+                       in voluptate velit esse cillum dolore eu fugiat
+                       nulla pariatur. Excepteur sint occaecat cupidatat
+                       non proident, sunt in culpa qui officia deserunt
+                       mollit anim id est laborum.
+--ArrayTest            
+--BoolTest=true|false  Tests boolean crap
+--CaseTest=foo         Tests for case sensitivity
+--ComplexFlagTest[+|-] 
+--DoubleTest           
+--EnumArrayTest        
+--EnumTest             
+--FlagTest             This is a long description and I hope it goes
+                       really well and it's going pretty good but not as
+                       good as I was hoping I hope it finishes soon
+                       because I can't think of anything else to write
+                       oh god what's happening?!
+--IntArrayTest         
+--IntTest              
+--lollersk8            
+--Lulz=teh_lulz        Set for ultimate lulz!
 ";
 
-
+			var description = OptionParser.GetDescription<OptionContract>("awesome.exe", 72);
 			Assert.That(description, Is.EqualTo(expected));
 		}
 
