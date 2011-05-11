@@ -20,7 +20,7 @@ namespace Argopt {
 				.Select(p => new OptionProperty(p));
 		}
 
-		/// <remarks>http://blueonionsoftware.com/blog.aspx?p=6091173d-6bdb-498c-9d57-c0da43319839</remarks>
+		/// <remarks>adapted from http://blueonionsoftware.com/blog.aspx?p=6091173d-6bdb-498c-9d57-c0da43319839</remarks>
 		private static List<string> WordWrap(string text, int margin) {
 			if (string.IsNullOrWhiteSpace(text)) {
 				return new List<string>();

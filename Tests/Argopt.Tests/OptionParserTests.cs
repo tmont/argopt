@@ -224,7 +224,7 @@ namespace Argopt.Tests {
 		}
 
 		[Test]
-		public void Should_get_description() {
+		public void Should_generate_formatted_description() {
 			var description = OptionParser.GetDescription<OptionContract>("awesome.exe");
 			const string expected = @"
 USAGE
