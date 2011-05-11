@@ -91,17 +91,6 @@ namespace Argopt.Tests {
 		}
 
 		[Test]
-		public void Should_parse_non_option_values() {
-			var result = OptionParser.Parse<OptionContract>(new[] { "foo", "bar", "--FlagTest", "baz", "foo=bar", "-dne" });
-			Assert.That(result.Values.Count(), Is.EqualTo(5));
-			Assert.That(result.Values.ElementAt(0), Is.EqualTo("foo"));
-			Assert.That(result.Values.ElementAt(1), Is.EqualTo("bar"));
-			Assert.That(result.Values.ElementAt(2), Is.EqualTo("baz"));
-			Assert.That(result.Values.ElementAt(3), Is.EqualTo("foo=bar"));
-			Assert.That(result.Values.ElementAt(4), Is.EqualTo("-dne"));
-		}
-
-		[Test]
 		public void Should_parse_named_option() {
 			var result = OptionParser.Parse<OptionContract>(new[] { "--NamedTest", "foo" });
 			Assert.That(result.Contract.NamedTest, Is.Null);
@@ -201,7 +190,45 @@ namespace Argopt.Tests {
 			Assert.That(result.Errors.First().ThrownException, Is.TypeOf<FormatException>());
 		}
 
+		[Test]
+		public void Should_not_inject_value_into_property_annotated_with_NotAnOption() {
+			var result = OptionParser.Parse(new[] { "--NotAnOption", "foo" }, new OptionContract { NotAnOption = "bar" });
+			Assert.That(result.Contract.NotAnOption, Is.EqualTo("bar"));
+		}
+
+		[Test]
+		public void Should_inject_first_non_option_value_into_value_property() {
+			var result = OptionParser.Parse<OptionContract>(new[] { "--FlagTest", "foo", "bar", "baz", "foo=bar", "-dne" });
+			Assert.That(result.Contract.Value, Is.EqualTo("foo"));
+		}
+
+		[Test]
+		public void Should_inject_non_option_valuus_as_array_into_value_property() {
+			var result = OptionParser.Parse<OptionContract2>(new[] { "foo", "--Meh", "bar", "baz", "foo=bar", "-dne" });
+			Assert.That(result.Contract.Values.Count(), Is.EqualTo(4));
+			Assert.That(result.Contract.Values.ElementAt(0), Is.EqualTo("foo"));
+			Assert.That(result.Contract.Values.ElementAt(1), Is.EqualTo("baz"));
+			Assert.That(result.Contract.Values.ElementAt(2), Is.EqualTo("foo=bar"));
+			Assert.That(result.Contract.Values.ElementAt(3), Is.EqualTo("-dne"));
+		}
+
+		[Test]
+		public void Should_ignore_non_option_values_if_no_value_property_is_specified() {
+			OptionParser.Parse<OptionContract3>(new[] { "foo", "--Meh", "bar", "baz", "foo=bar", "-dne" });
+		}
+
 		#region mocks
+		public class OptionContract3 {
+			public string Meh { get; set; }
+		}
+
+		public class OptionContract2 {
+			[ValueProperty]
+			public string[] Values { get; set; }
+
+			public string Meh { get; set; }
+		}
+
 		public class OptionContract {
 			public string Lulz { get; set; }
 			
@@ -237,6 +264,12 @@ namespace Argopt.Tests {
 
 			[Delimited(",")]
 			public MyEnum[] EnumArrayTest { get; set; }
+
+			[NotAnOption]
+			public string NotAnOption { get; set; }
+
+			[ValueProperty]
+			public string Value { get; set; }
 		}
 
 		public enum MyEnum {

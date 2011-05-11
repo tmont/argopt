@@ -97,4 +97,35 @@ namespace Argopt {
 
 		public string PropertyName { get; private set; }
 	}
+
+	/// <summary>
+	/// Provides a way of describing an option in a human-readable way
+	/// </summary>
+	public sealed class DescriptionAttribute : OptionAttribute {
+		/// <param name="description">The description of the option</param>
+		public DescriptionAttribute(string description = null) {
+			Description = description ?? string.Empty;
+		}
+
+		/// <summary>
+		/// Gets the description
+		/// </summary>
+		public string Description { get; private set; }
+
+		/// <summary>
+		/// Gets or sets whether this option or value is required (default is <c>false</c>)
+		/// </summary>
+		public bool Required { get; set; }
+	}
+
+	/// <summary>
+	/// Indicates that this property should not be used by Argopt during parsing
+	/// </summary>
+	public sealed class NotAnOptionAttribute : OptionAttribute { }
+
+	/// <summary>
+	/// Indicates that this property represents the value(s) passed on the command line,
+	/// rather than the options (e.g. "/my/file" in "cp -R /my/file")
+	/// </summary>
+	public sealed class ValuePropertyAttribute : OptionAttribute { }
 }

@@ -30,6 +30,13 @@ namespace Argopt {
 			if (delimitedAttribute != null) {
 				Delimiter = delimitedAttribute.Delimiter;
 			}
+
+			var descriptionAttribute = attributes.OfType<DescriptionAttribute>().FirstOrDefault();
+			if (descriptionAttribute != null) {
+				Description = descriptionAttribute.Description;
+			}
+
+			IsValueProperty = attributes.Any(a => a.GetType() == typeof(ValuePropertyAttribute));
 		}
 
 		private static object ConvertValue(string value, Type type) {
@@ -62,25 +69,25 @@ namespace Argopt {
 			return convertedValue;
 		}
 
+		private static Array ConvertToArray(string[] values, Type elementType) {
+			if (elementType == typeof(string)) {
+				return values;
+			}
+
+			var array = Array.CreateInstance(elementType, values.Length);
+			var i = 0;
+			foreach (var arrayValue in values.Select(splitValue => ConvertValue(splitValue, elementType))) {
+				array.SetValue(arrayValue, i++);
+			}
+
+			return array;
+		}
+
 		public void SetValue(object contract, string value) {
 			object convertedValue;
 
 			if (Delimiter != null && Type.IsArray) {
-				var splitValues = value.Split(new[] { Delimiter }, StringSplitOptions.None);
-				var elementType = Type.GetElementType();
-
-				if (elementType != typeof(string)) {
-					//convert each element to the correct array type
-					var array = Array.CreateInstance(elementType, splitValues.Length);
-					var i = 0;
-					foreach (var arrayValue in splitValues.Select(splitValue => ConvertValue(splitValue, elementType))) {
-						array.SetValue(arrayValue, i++);
-					}
-
-					convertedValue = array;
-				} else {
-					convertedValue = splitValues;
-				}
+				convertedValue = ConvertToArray(value.Split(new[] { Delimiter }, StringSplitOptions.None), Type.GetElementType());
 			} else {
 				convertedValue = ConvertValue(value, Type);
 			}
@@ -88,7 +95,23 @@ namespace Argopt {
 			property.SetValue(contract, convertedValue, new object[0]);
 		}
 
+		public void SetNonOptionValues(object contract, string[] values) {
+			if (!IsValueProperty) {
+				throw new InvalidOperationException("This property is not annotated with ValueProperty");
+			}
+
+			if (Type.IsArray) {
+				property.SetValue(contract, ConvertToArray(values, Type.GetElementType()), new object[0]);
+			} else {
+				SetValue(contract, values.FirstOrDefault());
+			}
+		}
+
 		public bool NameMatches(string name) {
+			if (IsValueProperty) {
+				return false;
+			}
+
 			var upperName = name.ToUpperInvariant();
 			if (Name == name || (!CaseSensitive && upperName == Name.ToUpperInvariant())) {
 				return true;
@@ -107,5 +130,7 @@ namespace Argopt {
 		public bool IsComplexFlag { get; private set; }
 		public PropertyInfo ComplexValueProperty { get; private set; }
 		public string Delimiter { get; private set; }
+		public string Description { get; private set; }
+		public bool IsValueProperty { get; private set; }
 	}
 }

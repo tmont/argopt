@@ -12,6 +12,18 @@ namespace Argopt {
 		private static readonly Regex unixRegex = new Regex(@"^--?([^=]+)");
 		private static readonly Regex windowsRegex = new Regex(@"^/([^:]+)");
 
+		private static IEnumerable<OptionProperty> GetProperties<T>() {
+			return typeof(T)
+				.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+				.Where(p => !p.GetCustomAttributes(true).Any(a => a.GetType() == typeof(NotAnOptionAttribute)))
+				.Select(p => new OptionProperty(p));
+		}
+
+		public static string GetDescription<T>() {
+			var properties = GetProperties<T>();
+			return "";
+		}
+
 		/// <summary>
 		/// Parses command line options, injecting values into a new instance of the option contract
 		/// defined in <typeparamref name="T"/>
@@ -33,10 +45,7 @@ namespace Argopt {
 		/// <param name="optionStyle">The command line syntax style, default is <see cref="OptionStyle.Unix"/></param>
 		/// <seealso cref="Parse{T}(string[],OptionStyle)"/>
 		public static IOptionParseResult<T> Parse<T>(string[] args, T contract, OptionStyle optionStyle = OptionStyle.Unix) {
-			var properties = contract
-				.GetType()
-				.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-				.Select(p => new OptionProperty(p));
+			var properties = GetProperties<T>();
 
 			var nonOptionValues = new List<string>();
 			var errors = new List<ParsingError>();
@@ -92,7 +101,13 @@ namespace Argopt {
 				}
 			}
 
-			return new OptionParseResult<T>(contract, nonOptionValues, errors);
+			//inject values into ValueProperty property, if given
+			var valueProperty = properties.FirstOrDefault(p => p.IsValueProperty);
+			if (valueProperty != null) {
+				valueProperty.SetNonOptionValues(contract, nonOptionValues.ToArray());
+			}
+
+			return new OptionParseResult<T>(contract, errors);
 		}
 	}
 }

@@ -13,12 +13,6 @@ namespace Argopt {
 		T Contract { get; }
 
 		/// <summary>
-		/// Gets an enumeration of command line values that were not part of an option 
-		/// (e.g. "/my/file" in "cp -R /my/file")
-		/// </summary>
-		IEnumerable<string> Values { get; }
-
-		/// <summary>
 		/// Gets an enumeration of all errors that occurred during parsing
 		/// </summary>
 		IEnumerable<ParsingError> Errors { get; }
@@ -30,14 +24,12 @@ namespace Argopt {
 	}
 
 	internal sealed class OptionParseResult<T> : IOptionParseResult<T> {
-		public OptionParseResult(T contract, IEnumerable<string> values, IEnumerable<ParsingError> errors) {
+		public OptionParseResult(T contract, IEnumerable<ParsingError> errors) {
 			Contract = contract;
-			Values = values;
 			Errors = errors;
 		}
 
 		public T Contract { get; private set; }
-		public IEnumerable<string> Values { get; private set; }
 		public IEnumerable<ParsingError> Errors { get; private set; }
 		public bool IsValid { get { return !Errors.Any(); } }
 	}
