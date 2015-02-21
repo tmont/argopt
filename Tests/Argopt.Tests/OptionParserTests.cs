@@ -225,7 +225,7 @@ namespace Argopt.Tests {
 
 		[Test]
 		public void Should_generate_formatted_description() {
-			const string expected = @"
+			var expected = @"
 USAGE
 awesome.exe --CaseTest=foo --lollersk8 [--AliasTest=string]
 [--ArrayTest] [--BoolTest=true|false] [--ComplexFlagTest] [--DoubleTest]
@@ -263,7 +263,8 @@ OPTIONS
 --IntTest              
 --lollersk8            
 --Lulz=teh_lulz        Set for ultimate lulz!
-";
+".Replace("\r\n", Environment.NewLine);
+
 
 			var description = OptionParser.GetDescription<OptionContract>("awesome.exe", 72);
 			Assert.That(description, Is.EqualTo(expected));
