@@ -1,6 +1,6 @@
-# Argopt <http://argopt.tmont.com/>
-Version 1.0 (see CHANGELOG for details)
-by Tommy Montgomery <http://tmont.com/>
+# Argopt
+
+[Documentation and examples](http://argopt.tmont.com/)
 
 Licensed under WTFPL: http://sam.zoy.org/wtfpl/
 
@@ -9,6 +9,3 @@ Licensed under WTFPL: http://sam.zoy.org/wtfpl/
 * Create a contract class as described at http://argopt.tmont.com/
 * Call Argopt.OptionParser.Parse<ContractClass>()
 - Profit
-
-## Authors
-Tommy Montgomery <http://tmont.com/>
